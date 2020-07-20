@@ -36,7 +36,7 @@ namespace DeltaWebMap.ProcessManagerServer
             process = Process.Start(new ProcessStartInfo
             {
                 FileName = server_type.package.exec_location,
-                Arguments = args
+                Arguments = server_type.package.exec_args + args
             });
             process.EnableRaisingEvents = true; //why isn't this enabled by default?
 

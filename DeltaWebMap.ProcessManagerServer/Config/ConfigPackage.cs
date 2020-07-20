@@ -11,5 +11,6 @@ namespace DeltaWebMap.ProcessManagerServer.Config
     {
         public string[] update_commands;
         public string exec_location;
+        public string exec_args; //Should end with a space 
     }
 }
