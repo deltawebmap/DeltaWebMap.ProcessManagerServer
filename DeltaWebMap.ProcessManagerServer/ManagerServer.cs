@@ -60,8 +60,23 @@ namespace DeltaWebMap.ProcessManagerServer
             if (!type_config.apache_mode_enabled)
                 return;
 
+            //Update each file
+            foreach (var s in type_config.apache_files)
+                _UpdateSingleApacheFile(s);
+
+            //Ensure we have the command to reload
+            if (reload && Program.config.apache_reload_command == null)
+                throw new Exception("Can't reload Apache2, as there is no command set for it.");
+
+            //Reload
+            if (reload)
+                ManagerTools.ExecuteShellCommand(Program.config.apache_reload_command);
+        }
+
+        private void _UpdateSingleApacheFile(string path)
+        {
             //Read file
-            string conf = File.ReadAllText(type_config.apache_file);
+            string conf = File.ReadAllText(path);
 
             //Locate the beginning of our template region
             int begin = conf.IndexOf(APACHE_CONF_MARKER_BEGIN);
@@ -76,21 +91,13 @@ namespace DeltaWebMap.ProcessManagerServer
 
             //Create the new data to use
             string data = "";
-            foreach(var i in instances)
+            foreach (var i in instances)
             {
                 data += type_config.apache_template.Replace("%HOST%", i.settings.address + ":" + i.settings.ports[0]) + "\n";
             }
 
             //Modify the file
-            File.WriteAllText(type_config.apache_file, conf.Substring(0, begin) + "\n" + data + conf.Substring(end, conf.Length - end));
-
-            //Ensure we have the command to reload
-            if (reload && Program.config.apache_reload_command == null)
-                throw new Exception("Can't reload Apache2, as there is no command set for it.");
-
-            //Reload
-            if (reload)
-                ManagerTools.ExecuteShellCommand(Program.config.apache_reload_command);
+            File.WriteAllText(path, conf.Substring(0, begin) + "\n" + data + conf.Substring(end, conf.Length - end));
         }
 
         public ManagerInstance CreateInstance(JObject config)

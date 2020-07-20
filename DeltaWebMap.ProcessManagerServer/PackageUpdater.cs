@@ -32,11 +32,22 @@ namespace DeltaWebMap.ProcessManagerServer
         private static void _UpdatePackages(OperationProgressClient progressSender)
         {
             progressSender.SendStatus(0x00, $"Updating {Program.config.packages.Count} packages...");
-            foreach(var p in Program.config.packages)
+            bool applied = true;
+            for (int step = 0; applied; step++)
             {
-                progressSender.SendStatus(0x00, $"Updating package {p.Key}...");
-                int code = ManagerTools.ExecuteShellCommand(p.Value.update_command);
-                progressSender.SendStatus(0x00, $"Update of package {p.Key} finished with exit code {code}.");
+                applied = false;
+                foreach (var p in Program.config.packages)
+                {
+                    //Only apply if within index
+                    if (p.Value.update_commands.Length < step)
+                    {
+                        //Apply
+                        applied = true;
+                        progressSender.SendStatus(0x00, $"Updating package [{step}] {p.Key}...");
+                        int code = ManagerTools.ExecuteShellCommand(p.Value.update_commands[step]);
+                        progressSender.SendStatus(0x00, $"Update of package [{step}] {p.Key} finished with exit code {code}.");
+                    }
+                }
             }
             progressSender.SendStatus(0x00, $"Finished updating {Program.config.packages.Count} packages.");
         }

@@ -9,7 +9,7 @@ namespace DeltaWebMap.ProcessManagerServer.Config
     /// </summary>
     public class ConfigPackage
     {
-        public string update_command;
+        public string[] update_commands;
         public string exec_location;
     }
 }
