@@ -20,7 +20,7 @@ namespace DeltaWebMap.ProcessManagerServer
         static void Main(string[] args)
         {
             //Decode config file
-            config = JsonConvert.DeserializeObject<ConfigFile>(File.ReadAllText("config.json"));
+            config = JsonConvert.DeserializeObject<ConfigFile>(File.ReadAllText(args[0]));
 
             //Create Delta connection
             connection = new DeltaConnection(config.delta_config_path, config.server_id, 0, 1, new ManagerCoreNet());
