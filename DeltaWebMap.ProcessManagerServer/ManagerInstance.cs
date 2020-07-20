@@ -27,7 +27,7 @@ namespace DeltaWebMap.ProcessManagerServer
                 throw new Exception("Process is already running!");
 
             //Create args
-            string args = $"{System.Web.HttpUtility.UrlEncode(Program.config.delta_config_path)} {settings.server_id}";
+            string args = $"{Program.config.delta_config_path} {settings.server_id}";
 
             //Log
             Program.connection.Log("ManagerProcess-StartProcess", $"Starting server. Type={server_type.type_config.type.ToString()}, ServerID={settings.server_id}, Port={settings.port}, Exec={server_type.package.exec_location}, Args={args}", LibDeltaSystem.DeltaLogLevel.Low);
