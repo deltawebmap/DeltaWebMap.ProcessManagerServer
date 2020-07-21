@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace DeltaWebMap.ProcessManagerServer
 {
@@ -41,7 +42,7 @@ namespace DeltaWebMap.ProcessManagerServer
             }
 
             Console.WriteLine("Ready.");
-            Console.ReadLine();
+            Task.Delay(-1).GetAwaiter().GetResult();
         }
 
         public static int GetNextPort()
