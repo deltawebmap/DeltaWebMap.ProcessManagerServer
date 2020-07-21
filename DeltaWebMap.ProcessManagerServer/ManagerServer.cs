@@ -100,7 +100,7 @@ namespace DeltaWebMap.ProcessManagerServer
             File.WriteAllText(path, conf.Substring(0, begin) + "\n" + data + conf.Substring(end, conf.Length - end));
         }
 
-        public ManagerInstance CreateInstance(JObject config)
+        public ManagerInstance CreateInstance(bool reloadApache, JObject config)
         {
             //Generate ports to use
             int netPort = Program.GetNextPort();
@@ -142,7 +142,7 @@ namespace DeltaWebMap.ProcessManagerServer
             instances.Add(instance);
 
             //Modify the Apache2 config file
-            UpdateApacheFile();
+            UpdateApacheFile(reloadApache);
 
             return instance;
         }

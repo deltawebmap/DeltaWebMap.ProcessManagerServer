@@ -1,8 +1,10 @@
 ﻿using LibDeltaSystem.Db.System;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DeltaWebMap.ProcessManagerServer
@@ -62,6 +64,25 @@ namespace DeltaWebMap.ProcessManagerServer
             if (process == null)
                 return false;
             return !process.HasExited;
+        }
+
+        public async Task RemoveInstance()
+        {
+            //Stop if running
+            if (IsProcessRunning())
+                await StopProcess();
+
+            //Modify the Apache2 config file
+            server_type.instances.Remove(this);
+            server_type.UpdateApacheFile(true);
+            Program.server_instances.Remove(settings);
+
+            //Delete from database
+            await Program.connection.system_delta_servers.DeleteOneAsync(Builders<DbSystemServer>.Filter.Eq("_id", settings._id));
+
+            //Notify all of this change and allow it to propigate
+            Program.connection.network.NotifyAllServerListModified();
+            Thread.Sleep(400);
         }
     }
 }
