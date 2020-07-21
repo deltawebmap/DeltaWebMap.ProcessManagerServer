@@ -22,10 +22,6 @@ namespace DeltaWebMap.ProcessManagerServer
 
         public void StartProcess()
         {
-            //Make sure it's not already running
-            if (process != null)
-                throw new Exception("Process is already running!");
-
             //Create args
             string args = $"{Program.config.delta_config_path} {settings.server_id}";
 

@@ -40,8 +40,22 @@ namespace DeltaWebMap.ProcessManagerServer
             }
 
             //Create server
-            var instance = Program.server_types[serverType].CreateInstance(serverConfig);
+            ManagerInstance instance;
+            try
+            {
+                instance = Program.server_types[serverType].CreateInstance(serverConfig);
+            } catch (Exception ex)
+            {
+                return CreateFailResponse($"Failed to create instance: {ex.Message} {ex.StackTrace}");
+            }
+
+            //Start instance
             instance.StartProcess();
+
+            //Validate instance is running
+            Thread.Sleep(500);
+            if(!instance.IsProcessRunning())
+                return CreateFailResponse($"Instance processes stopped early.");
 
             //Create response payload
             byte[] response = new byte[3];
