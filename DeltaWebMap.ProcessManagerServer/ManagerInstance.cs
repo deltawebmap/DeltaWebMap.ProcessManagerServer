@@ -81,7 +81,7 @@ namespace DeltaWebMap.ProcessManagerServer
             await Program.connection.system_delta_servers.DeleteOneAsync(Builders<DbSystemServer>.Filter.Eq("_id", settings._id));
 
             //Notify all of this change and allow it to propigate
-            Program.connection.network.NotifyAllServerListModified();
+            Program.connection.network.NotifyAllServerListModified((ushort)settings.server_id);
             Thread.Sleep(400);
         }
     }

@@ -115,7 +115,7 @@ namespace DeltaWebMap.ProcessManagerServer
             instance.RemoveInstance().GetAwaiter().GetResult();
 
             //Return OK status
-            return new byte[] { 0x01 };
+            return new byte[] { 0x00 };
         }
 
         private byte[] CreateFailResponse(string msg)
