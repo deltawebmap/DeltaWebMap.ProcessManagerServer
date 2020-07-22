@@ -7,7 +7,7 @@ namespace DeltaWebMap.ProcessManagerServer
 {
     public class ManagerTools
     {
-        public static int ExecuteShellCommand(string cmd)
+        public static int ExecuteShellCommand(string cmd, out string result)
         {
             var escapedArgs = cmd.Replace("\"", "\\\"");
 
@@ -24,9 +24,15 @@ namespace DeltaWebMap.ProcessManagerServer
             };
 
             process.Start();
+            result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
             return process.ExitCode;
+        }
+
+        public static int ExecuteShellCommand(string cmd)
+        {
+            return ExecuteShellCommand(cmd, out string nullOutput);
         }
     }
 }

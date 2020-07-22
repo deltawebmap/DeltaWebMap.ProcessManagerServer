@@ -39,13 +39,14 @@ namespace DeltaWebMap.ProcessManagerServer
                 foreach (var p in Program.config.packages)
                 {
                     //Only apply if within index
-                    if (p.Value.update_commands.Length < step)
+                    if (step < p.Value.update_commands.Length)
                     {
                         //Apply
                         applied = true;
                         progressSender.SendStatus(0x00, $"Updating package [{step}] {p.Key}...");
-                        int code = ManagerTools.ExecuteShellCommand(p.Value.update_commands[step]);
+                        int code = ManagerTools.ExecuteShellCommand(p.Value.update_commands[step], out string result);
                         progressSender.SendStatus(0x00, $"Update of package [{step}] {p.Key} finished with exit code {code}.");
+                        progressSender.SendStatus(0x03, result.Substring(0, Math.Min(result.Length, 16384)));
                     }
                 }
             }
