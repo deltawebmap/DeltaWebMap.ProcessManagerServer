@@ -43,10 +43,10 @@ namespace DeltaWebMap.ProcessManagerServer
                     {
                         //Apply
                         applied = true;
-                        progressSender.SendStatus(0x00, $"Updating package [{step}] {p.Key}...");
+                        progressSender.SendStatus(0x00, $"[{step}-{p.Key}] Updating package...");
                         int code = ManagerTools.ExecuteShellCommand(p.Value.update_commands[step], out string result);
-                        progressSender.SendStatus(0x00, $"Update of package [{step}] {p.Key} finished with exit code {code}.");
-                        progressSender.SendStatus(0x03, result.Substring(0, Math.Min(result.Length, 16384)));
+                        progressSender.SendStatus(0x03, result + "\n" + result);
+                        progressSender.SendStatus(0x00, $"[{step}-{p.Key}] Package update finished with exit code {code}.");
                     }
                 }
             }
@@ -78,7 +78,7 @@ namespace DeltaWebMap.ProcessManagerServer
             }
 
             //Finish
-            progressSender.SendStatus((ushort)(ended == 0 ? 0x01 : 0x02), $"Processes started. {running} running, {ended} died.");
+            progressSender.SendStatus((byte)(ended == 0 ? 0x01 : 0x02), $"Processes started. {running} running, {ended} died.");
         }
     }
 }

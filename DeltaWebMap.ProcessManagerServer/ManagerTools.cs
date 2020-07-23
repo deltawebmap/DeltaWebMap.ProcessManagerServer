@@ -9,20 +9,27 @@ namespace DeltaWebMap.ProcessManagerServer
     {
         public static int ExecuteShellCommand(string cmd, out string result)
         {
-            var escapedArgs = cmd.Replace("\"", "\\\"");
+            //Create args
+            string args;
+            if(Environment.OSVersion.Platform == PlatformID.Win32NT)
+                args = "/C \"" + cmd.Replace("\"", "\\\"") + "\"";
+            else
+                args = "-c \"" + cmd.Replace("\"", "\\\"") + "\"";
 
+            //Run
             var process = new Process()
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = Program.config.shell,
-                    Arguments = $"-c \"{escapedArgs}\"",
+                    Arguments = args,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
                 }
             };
 
+            //Start
             process.Start();
             result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
