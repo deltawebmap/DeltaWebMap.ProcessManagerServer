@@ -125,5 +125,16 @@ namespace DeltaWebMap.ProcessManagerServer
             Encoding.UTF8.GetBytes(msg, 0, msg.Length, buffer, 1);
             return buffer;
         }
+
+        public override void HealthStatusRequested(HealthStatusWriter writer)
+        {
+            base.HealthStatusRequested(writer);
+
+            //Add list of supported types
+            string supportedTypesStrings = "";
+            foreach (var t in Program.server_types)
+                supportedTypesStrings += t.Key.ToString() + ",";
+            writer.WriteString("PROCESS_MANAGER.SUPPORTED_SERVER_TYPES", supportedTypesStrings.Trim(','));
+        }
     }
 }
